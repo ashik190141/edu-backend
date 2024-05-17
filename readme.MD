@@ -30,3 +30,15 @@
 ## All Product
  - operation: get
  - url : http://localhost:5000/api/v1/product/all-product/{loggedInUserEmail}
+
+## Add add to cart
+ - operation: post
+ - url: http://localhost:5000/api/v1/cart/addToCart
+ - body: {
+            "email":"school@gmail.com",
+            "productId":"66475ae2beda000e80639732"
+        }
+
+## Get All Cart Data
+ - operation: get
+ - url: http://localhost:5000/api/v1/cart/addToCart/{loggedInUserInfo}
