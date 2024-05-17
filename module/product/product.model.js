@@ -7,9 +7,7 @@ const ProductSchema = mongoose.Schema({
   },
   image: {
     type: String,
-  },
-  id: {
-    type: Number,
+    required:true
   },
   price: {
     type: Number,
@@ -21,10 +19,6 @@ const ProductSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    required: true,
-  },
-  rating: {
-    type: Number,
     required: true,
   },
   createdAt: {
