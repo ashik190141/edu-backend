@@ -39,6 +39,7 @@ const getCartFromDB = async (req, res) => {
     const uniqueIDs = Array.from(new Set(allId));
     
     let result=[];
+    let totalPrice=0;
     for (let i = 0; i < uniqueIDs.length; i++){
         let id = uniqueIDs[i];
         let products = allData.filter(data => data.productId == id);
@@ -63,19 +64,23 @@ const getCartFromDB = async (req, res) => {
           }
         }
 
+        totalPrice = totalPrice + products.length * price
+
         result.push({
-            quantity: products.length,
-            name: productInfo.name,
-            image: productInfo.image,
-            price: productInfo.price,
-            id: productInfo._id,
-            discount: price
-        })
+          quantity: products.length,
+          name: productInfo.name,
+          image: productInfo.image,
+          price: productInfo.price,
+          productId: productInfo._id,
+          discount: price,
+        });
     }
+      
 
     res.json({
       statusCode: status.OK,
       data: result,
+      totalPrice: totalPrice
     });
   } catch (error) {
       console.log(error);
