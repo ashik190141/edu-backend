@@ -4,6 +4,9 @@ const productModel = require("../product/product.model")
 const userModel = require("../auth/auth.model");
 const { school, bookShop } = require("../../constant/discount");
 
+const d = new Date();
+let month = d.getMonth();
+
 const cartAddIntoDB = async (req, res) => {
     try {
         const data = req.body;

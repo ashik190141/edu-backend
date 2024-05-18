@@ -24,7 +24,26 @@ const orderAddIntoDB = async (req, res) => {
   }
 };
 
+const getUserOrderProductFromDB = async (req, res) => {
+  try {
+    const email = req.params.email;
+    const query = { email: email };
+    const allData = await myModel.find(query).exec();
+    // console.log(email);
+
+    res.json({
+      statusCode: status.OK,
+      data: allData,
+    });
+  } catch (error) {
+    res.json({
+      statusCode: status.INTERNAL_SERVER_ERROR,
+      message: "Failed to get data",
+    });
+  }
+};
 
 module.exports = {
   orderAddIntoDB,
+  getUserOrderProductFromDB,
 };

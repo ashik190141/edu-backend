@@ -31,6 +31,13 @@ const getProductFromDB = async (req, res) => {
     const allData = await myModel.find().exec();
     const user = await userModel.findOne({ email: email });
 
+    if (email == 'null') {
+      return res.json({
+        statusCode: status.OK,
+        data: allData,
+      });
+    }
+
     for (let i = 0; i < allData.length; i++) {
       let price = allData[i].price;
       if (user.role == "school") {
@@ -52,6 +59,7 @@ const getProductFromDB = async (req, res) => {
       }
 
       const productInfo = {
+        _id:allData[i]._id,
         name: allData[i].name,
         image: allData[i].image,
         description: allData[i].description,
