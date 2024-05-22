@@ -84,7 +84,27 @@ const getProductFromDB = async (req, res) => {
   }
 };
 
+const getSingleProductFromDB = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // console.log(id);
+    const allData = await myModel.findById(id);
+
+    res.json({
+      result: true,
+      statusCode: status.OK,
+      data: allData,
+    });
+  } catch (error) {
+    res.json({
+      statusCode: status.INTERNAL_SERVER_ERROR,
+      message: "Failed to get data",
+    });
+  }
+};
+
 module.exports = {
   productAddIntoDB,
   getProductFromDB,
+  getSingleProductFromDB,
 };

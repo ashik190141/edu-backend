@@ -18,7 +18,6 @@
     "express": "^4.19.0",
     "http-status": "^1.7.4",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.2.2",
-    "openai": "^4.47.1"
+    "mongoose": "^8.2.2"
   }
 }

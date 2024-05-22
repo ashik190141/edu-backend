@@ -5,6 +5,7 @@ const productRouter = require("../product/product.route");
 const cartRouter = require("../cart/cart.route");
 const orderRouter = require("../order/order.route");
 const chatbotRouter = require("../chat/chat.route");
+const discountRouter = require("../discount/discount.route");
 
 const router = express.Router();
 
@@ -28,6 +29,10 @@ const moduleRoute = [
   {
     path: "/chatbot",
     route: chatbotRouter,
+  },
+  {
+    path: "/discount",
+    route: discountRouter,
   },
 ];
 
