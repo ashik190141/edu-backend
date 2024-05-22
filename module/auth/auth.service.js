@@ -78,7 +78,16 @@ const loginUser = async (req, res) => {
   }
 }
 
+const allUser = async (req, res) => {
+  const allUser = await myModel.find(query).exec();
+  res.json({
+    result: true,
+    data:allUser
+  })
+}
+
 module.exports = {
   addUserIntoDB,
-  loginUser
+  loginUser,
+  allUser
 };
