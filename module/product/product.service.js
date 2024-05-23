@@ -1,10 +1,8 @@
 const status = require("http-status");
 const myModel = require("./product.model");
 const userModel = require("../auth/auth.model");
-const { school, bookShop } = require("../../constant/discount");
-
-const d = new Date();
-let month = d.getMonth();
+const discountModel = require("../discount/discount.model");
+const { calculateDiscount } = require("../../calculateDiscount/calculateDiscount");
 
 const productAddIntoDB = async (req, res) => {
   try {
@@ -26,7 +24,6 @@ const productAddIntoDB = async (req, res) => {
 
 const getProductFromDB = async (req, res) => {
   try {
-    const result = [];
     const email = req.params.email;
     const allData = await myModel.find().exec();
     const user = await userModel.findOne({ email: email });
@@ -38,38 +35,7 @@ const getProductFromDB = async (req, res) => {
       });
     }
 
-    for (let i = 0; i < allData.length; i++) {
-      let price = allData[i].price;
-      if (user.role == "school") {
-        if (allData[i].category == "Pen") {
-          price = price - price * (school.pen / 100);
-        } else if (allData[i].category == "Paper") {
-          price = price - price * (school.paper / 100);
-        } else {
-          price = price - price * (school.book / 100);
-        }
-      } else if (user.role == "bookshop") {
-        if (allData[i].category == "Pen") {
-          price = price - price * (bookShop.pen/100);
-        } else if (allData[i].category == "Paper") {
-          price = price - price * (bookShop.paper/100);
-        } else {
-          price = price - price * (bookShop.book[month]/100);
-        }
-      }
-
-      const productInfo = {
-        _id:allData[i]._id,
-        name: allData[i].name,
-        image: allData[i].image,
-        description: allData[i].description,
-        category: allData[i].category,
-        price: allData[i].price,
-        discountPrice: price,
-      };
-      
-      result.push(productInfo);
-    }
+    const result = await calculateDiscount(allData,user)
 
     res.json({
       statusCode: status.OK,
@@ -89,11 +55,22 @@ const getSingleProductFromDB = async (req, res) => {
     const id = req.params.id;
     // console.log(id);
     const allData = await myModel.findById(id);
+    const dataWithDiscount = await discountModel.findOne({ productId: id })
+
+    const result = {
+      _id: allData._id,
+      name: allData.name,
+      image: allData.image,
+      price: allData.price,
+      category: allData.category,
+      description: allData.description,
+      discountParentage: dataWithDiscount?.discountParentage || 0,
+    };
 
     res.json({
       result: true,
       statusCode: status.OK,
-      data: allData,
+      data: result,
     });
   } catch (error) {
     res.json({

@@ -3,6 +3,6 @@ const { discountAddIntoDB } = require("./discount.service");
 
 const discountRouter = express.Router();
 
-discountRouter.post("/create-discount", discountAddIntoDB);
+discountRouter.put("/create-discount/:id", discountAddIntoDB);
 
 module.exports = discountRouter;
