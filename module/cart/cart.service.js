@@ -1,11 +1,7 @@
 const status = require("http-status");
 const myModel = require("./cart.model");
 const userModel = require("../auth/auth.model");
-const { school, bookShop } = require("../../constant/discount");
 const { calculateDiscountOfCart } = require("../../calculateDiscount/calculateDiscountWithCart");
-
-const d = new Date();
-let month = d.getMonth();
 
 const cartAddIntoDB = async (req, res) => {
     try {

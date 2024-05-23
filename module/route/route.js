@@ -6,6 +6,7 @@ const cartRouter = require("../cart/cart.route");
 const orderRouter = require("../order/order.route");
 const chatbotRouter = require("../chat/chat.route");
 const discountRouter = require("../discount/discount.route");
+const userDiscountRouter = require("../userDiscount/userDiscount.route");
 
 const router = express.Router();
 
@@ -33,6 +34,10 @@ const moduleRoute = [
   {
     path: "/discount",
     route: discountRouter,
+  },
+  {
+    path: "/userDiscount",
+    route: userDiscountRouter,
   },
 ];
 
