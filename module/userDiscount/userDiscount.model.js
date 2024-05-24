@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const cartSchema = mongoose.Schema({
+const userDiscountSchema = mongoose.Schema({
   schoolPen: {
     type: Number,
   },
@@ -25,4 +25,4 @@ const cartSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("userDiscount", cartSchema);
+module.exports = mongoose.model("userDiscount", userDiscountSchema);

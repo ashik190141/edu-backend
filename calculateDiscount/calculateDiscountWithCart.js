@@ -25,24 +25,43 @@ const calculateDiscountOfCart = async (uniqueIDs, user, allData) => {
       price * (discountInfo?.discountParentage / 100) || 0;
 
     if (user.role == "school") {
-        if (allData[i].category == "Pen") {
-          price = price - ((price * (userDiscountInfo.schoolPen / 100)) + discountParentage);
-        } else if (allData[i].category == "Paper") {
-          price =
-            price -
-            (price * (userDiscountInfo.schoolPaper / 100) + discountParentage);
-        } else {
-          price = price - ((price * (userDiscountInfo.schoolBook / 100)) + discountParentage);
-        }
-      } else if (user.role == "bookshop") {
-        if (allData[i].category == "Pen") {
-          price = price - ((price * (userDiscountInfo.bookshopPen / 100)) + discountParentage);
-        } else if (allData[i].category == "Paper") {
-          price = price - ((price * (userDiscountInfo.bookshopPaper / 100)) + discountParentage);
-        } else {
-          price = price - ((price * (userDiscountInfo.bookshopBook[month] / 100)) + discountParentage);
-        }
+      if (allData[i].category == "Pen") {
+        price =
+          price -
+          (price * (userDiscountInfo.schoolPen / 100) + discountParentage);
+      } else if (allData[i].category == "Paper") {
+        price =
+          price -
+          (price * (userDiscountInfo.schoolPaper / 100) + discountParentage);
+      } else {
+        price =
+          price -
+          (price * (userDiscountInfo.schoolBook / 100) + discountParentage);
       }
+    } else if (user.role == "bookshop") {
+      if (allData[i].category == "Pen") {
+        price =
+          price -
+          (price * (userDiscountInfo.bookshopPen / 100) + discountParentage);
+      } else if (allData[i].category == "Paper") {
+        price =
+          price -
+          (price * (userDiscountInfo.bookshopPaper / 100) + discountParentage);
+      } else {
+        price =
+          price -
+          (price * (userDiscountInfo.bookshopBook[month] / 100) +
+            discountParentage);
+      }
+    } else {
+      if (allData[i].category == "Pen") {
+        price = price - discountParentage;
+      } else if (allData[i].category == "Paper") {
+        price = price - discountParentage;
+      } else {
+        price = price - discountParentage;
+      }
+    }
       
     totalPrice = totalPrice + products.length * price;
 

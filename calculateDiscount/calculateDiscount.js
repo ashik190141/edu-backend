@@ -33,6 +33,14 @@ const calculateDiscount = async(allData, user) => {
         } else {
           price = price - ((price * (userDiscountInfo.bookshopBook[month] / 100)) + discountParentage);
         }
+      } else {
+        if (allData[i].category == "Pen") {
+          price = price - (discountParentage);
+        } else if (allData[i].category == "Paper") {
+          price = price - (discountParentage);
+        } else {
+          price = price - (discountParentage);
+        }
       }
 
       const productInfo = {
