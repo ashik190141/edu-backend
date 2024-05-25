@@ -113,7 +113,7 @@ const getAllDiscountWithUserRole = async(req,res)=> {
       afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPaper / 100)) + discountParentage);
       general = price - discountParentage
     }else{
-      category="Book";
+      category="Book"
       afterDiscountSchool = price - ((price * (discountWithRole[0].schoolBook / 100)) + discountParentage);
       afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopBook[month] / 100)) + discountParentage);
       general = price - discountParentage
