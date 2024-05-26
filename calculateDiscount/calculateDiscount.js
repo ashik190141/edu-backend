@@ -13,25 +13,26 @@ const calculateDiscount = async(allData, user) => {
     for (let i = 0; i < allData.length; i++) {
       let price = allData[i].price;
       let discountInfo = await discountModel.findOne({ productId : allData[i]._id});
-      let discountParentage = (price * (discountInfo?.discountParentage / 100)) || 0;
+      let discountParentage = discountInfo?.discountParentage || 0;
       
       if (user.role == "school") {
         if (allData[i].category == "Pen") {
-          price = price - ((price * (userDiscountInfo.schoolPen / 100)) + discountParentage);
+          // discount price = orginal price - (orginal price * userBaseCount + perproductDiscount)
+          price = price - ((price * ((userDiscountInfo.schoolPen+discountParentage) / 100)));
         } else if (allData[i].category == "Paper") {
           price =
             price -
-            (price * (userDiscountInfo.schoolPaper / 100) + discountParentage);
+            (price * ((userDiscountInfo.schoolPaper + discountParentage) / 100));
         } else {
-          price = price - ((price * (userDiscountInfo.schoolBook / 100)) + discountParentage);
+          price = price - ((price * ((userDiscountInfo.schoolBook + discountParentage) / 100)));
         }
       } else if (user.role == "bookshop") {
         if (allData[i].category == "Pen") {
-          price = price - ((price * (userDiscountInfo.bookshopPen / 100)) + discountParentage);
+          price = price - (price * ((userDiscountInfo.bookshopPen+discountParentage) / 100));
         } else if (allData[i].category == "Paper") {
-          price = price - ((price * (userDiscountInfo.bookshopPaper / 100)) + discountParentage);
+          price = price - ((price * ((userDiscountInfo.bookshopPaper + discountParentage) / 100)));
         } else {
-          price = price - ((price * (userDiscountInfo.bookshopBook[month] / 100)) + discountParentage);
+          price = price - ((price * ((userDiscountInfo.bookshopBook[month] + discountParentage) / 100 )));
         }
       } else {
         if (allData[i].category == "Pen") {

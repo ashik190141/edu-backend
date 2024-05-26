@@ -120,7 +120,9 @@ const getAllDiscountWithUserRole = async(req,res)=> {
     }
 
     let obj = {
+      id: allData[i]._id,
       name: allData[i].name,
+      price: allData[i].price,
       category: category,
       school: afterDiscountSchool,
       bookshop: afterDiscountBookshop,

@@ -79,7 +79,7 @@ const loginUser = async (req, res) => {
 }
 
 const allUser = async (req, res) => {
-  const allUser = await myModel.find(query).exec();
+  const allUser = await myModel.find().exec();
   res.json({
     result: true,
     data:allUser
