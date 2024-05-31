@@ -8,6 +8,7 @@ let month = d.getMonth();
 const calculateDiscountOfCart = async (uniqueIDs, user, allData) => {
   let result = [];
   let totalPrice = 0;
+  let isType = null;
   const userDiscountData = await userDiscountModel.find().exec();
   let userDiscountInfo = userDiscountData[0];
 
@@ -16,6 +17,12 @@ const calculateDiscountOfCart = async (uniqueIDs, user, allData) => {
     let products = allData.filter((data) => data.productId == id);
     let productInfo = await productModel.findOne({ _id: id });
     let price = productInfo.price;
+
+    if (productInfo.sellingType == '1') {
+      isType = "Product"
+    } else {
+      isType = "Package"
+    }
 
     let discountInfo = await discountModel.findOne({
       productId: allData[i]._id,
@@ -70,6 +77,7 @@ const calculateDiscountOfCart = async (uniqueIDs, user, allData) => {
       price: productInfo.price,
       productId: productInfo._id,
       discount: price,
+      isType: isType,
     });
   }
   return [result, totalPrice];

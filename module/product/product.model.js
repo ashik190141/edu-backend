@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const packageSchema = new mongoose.Schema({
+  productId: {
+    type: String,
+    required: true,
+  },
+  productNumber: {
+    type: Number,
+    required: true,
+  },
+});
+
 const ProductSchema = mongoose.Schema({
   name: {
     type: String,
@@ -20,13 +31,16 @@ const ProductSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  data: {
+    type: [packageSchema],
+  },
   description: {
     type: String,
     required: true,
   },
   sellingType: {
     type: String,
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,

@@ -6,7 +6,7 @@ const orderRouter = express.Router();
 orderRouter.post("/create-order", orderAddIntoDB);
 orderRouter.get("/my-orders/:email", getUserOrderProductFromDB);
 orderRouter.get("/all-orders", getAllOrderProductFromDB);
-router.put("/order-delivered/:id", updateOrderProductStatusIntoDB);
-router.put("/order-return/:id", returnProductIntoDB);
+orderRouter.put("/order-delivered/:id", updateOrderProductStatusIntoDB);
+orderRouter.put("/order-return/:id", returnProductIntoDB);
 
 module.exports = orderRouter;
