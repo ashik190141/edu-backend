@@ -2,7 +2,11 @@ const status = require("http-status");
 const myModel = require("./product.model");
 const userModel = require("../auth/auth.model");
 const discountModel = require("../discount/discount.model");
+const userDiscountModel = require("../userDiscount/userDiscount.model");
 const { calculateDiscount } = require("../../calculateDiscount/calculateDiscount");
+
+const d = new Date();
+let month = d.getMonth()
 
 const productAddIntoDB = async (req, res) => {
   try {
@@ -116,6 +120,62 @@ const getPackagesFromDB = async (req, res) => {
     });
   }
 };
+const getAllDiscountWithUserRole = async(req,res)=> {
+  try{
+  const allData = await myModel.find().exec();
+  const discountWithRole = await userDiscountModel.find().exec();
+  console.log('discountWithRole',discountWithRole);
+  let category=null;
+  let afterDiscountSchool = null
+  let afterDiscountBookshop = null
+  let general = null
+  const result = []
+
+  for(let i=0;i<allData.length;i++){
+    let price = allData[i].price;
+    console.log("price",price);
+    let discountInfo = await discountModel.findOne({ productId : allData[i]._id});
+    let discountParentage = (price * (discountInfo?.discountParentage / 100)) || 0;
+    console.log("discountParentage",discountParentage);
+
+    if(allData[i].category=='Pen'){
+      category="Pen";
+      afterDiscountSchool =  price - ((price * (discountWithRole[0].schoolPen / 100)) + discountParentage);
+      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPen / 100)) + discountParentage);
+      general = price - discountParentage
+    }else if(allData[i].category=='Paper'){
+      category="Paper";
+      afterDiscountSchool = price - ((price * (discountWithRole[0].schoolPaper / 100)) + discountParentage);
+      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPaper / 100)) + discountParentage);
+      general = price - discountParentage
+    }else{
+      category="Book"
+      afterDiscountSchool = price - ((price * (discountWithRole[0].schoolBook / 100)) + discountParentage);
+      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopBook[month] / 100)) + discountParentage);
+      general = price - discountParentage
+    }
+
+    let obj = {
+      id: allData[i]._id,
+      name: allData[i].name,
+      price: allData[i].price,
+      category: category,
+      school: afterDiscountSchool,
+      bookshop: afterDiscountBookshop,
+      user: general,
+    };
+
+    result.push(obj)
+  }
+
+  res.json({
+    result: true,
+    data: result
+  })
+  }catch(error){
+    console.log(error);
+  }
+}
 
 module.exports = {
   productAddIntoDB,
@@ -123,4 +183,5 @@ module.exports = {
   getSingleProductFromDB,
   packageAddedIntoDB,
   getPackagesFromDB,
+  getAllDiscountWithUserRole
 };
