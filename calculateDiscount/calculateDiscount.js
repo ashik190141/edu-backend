@@ -64,6 +64,7 @@ const calculateDiscount = async (allData, user) => {
       category: allData[i].category,
       price: allData[i].price,
       discountPrice: price,
+      available: allData[i].available
     };
 
     result.push(productInfo);

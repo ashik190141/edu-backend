@@ -3,9 +3,13 @@ const mongoose = require("mongoose");
 const packageSchema = new mongoose.Schema({
   productId: {
     type: String,
+    required:true,
+  },
+  buyProduct: {
+    type: Number,
     required: true,
   },
-  productNumber: {
+  getProduct: {
     type: Number,
     required: true,
   },
@@ -26,13 +30,14 @@ const ProductSchema = mongoose.Schema({
   },
   category: {
     type: String,
+    required: true
   },
   available: {
     type: Number,
     required: true,
   },
   data: {
-    type: [packageSchema],
+    type: packageSchema,
   },
   description: {
     type: String,

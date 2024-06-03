@@ -19,6 +19,7 @@ const productAddIntoDB = async (req, res) => {
       statusCode: status.CREATED,
     });
   } catch (error) {
+    console.log(error);
     res.json({
       statusCode: status.INTERNAL_SERVER_ERROR,
       message: "Failed to insert data",

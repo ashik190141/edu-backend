@@ -77,7 +77,9 @@ const calculateDiscountOfCart = async (uniqueIDs, user, allData) => {
       price: productInfo.price,
       productId: productInfo._id,
       discount: price,
+      data: productInfo?.data,
       isType: isType,
+      category: productInfo?.category
     });
   }
   return [result, totalPrice];
