@@ -15,6 +15,7 @@ const calculateDiscount = async (allData, user) => {
       productId: allData[i]._id,
     });
     let discountParentage = discountInfo?.discountParentage || 0;
+    
 
     if (user.role == "school") {
       if (allData[i].category == "Pen") {
@@ -55,7 +56,7 @@ const calculateDiscount = async (allData, user) => {
         price = price - discountParentage;
       }
     }
-
+    
     const productInfo = {
       _id: allData[i]._id,
       name: allData[i].name,

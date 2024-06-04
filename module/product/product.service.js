@@ -136,23 +136,23 @@ const getAllDiscountWithUserRole = async(req,res)=> {
     let price = allData[i].price;
     console.log("price",price);
     let discountInfo = await discountModel.findOne({ productId : allData[i]._id});
-    let discountParentage = (price * (discountInfo?.discountParentage / 100)) || 0;
+    let discountParentage = discountInfo?.discountParentage || 0;
     console.log("discountParentage",discountParentage);
 
     if(allData[i].category=='Pen'){
       category="Pen";
-      afterDiscountSchool =  price - ((price * (discountWithRole[0].schoolPen / 100)) + discountParentage);
-      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPen / 100)) + discountParentage);
+      afterDiscountSchool =  price - ((price * (discountWithRole[0].schoolPen + discountParentage) / 100));
+      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPen  + discountParentage) / 100));
       general = price - discountParentage
     }else if(allData[i].category=='Paper'){
       category="Paper";
-      afterDiscountSchool = price - ((price * (discountWithRole[0].schoolPaper / 100)) + discountParentage);
-      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPaper / 100)) + discountParentage);
+      afterDiscountSchool = price - ((price * (discountWithRole[0].schoolPaper + discountParentage) / 100));
+      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopPaper + discountParentage) / 100));
       general = price - discountParentage
     }else{
       category="Book"
-      afterDiscountSchool = price - ((price * (discountWithRole[0].schoolBook / 100)) + discountParentage);
-      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopBook[month] / 100)) + discountParentage);
+      afterDiscountSchool = price - ((price * (discountWithRole[0].schoolBook + discountParentage) / 100));
+      afterDiscountBookshop = price - ((price * (discountWithRole[0].bookshopBook[month] + discountParentage) / 100));
       general = price - discountParentage
     }
 

@@ -26,14 +26,19 @@ const productInfoSchema = new mongoose.Schema({
 const orderSchema = mongoose.Schema({
   email: {
     type: String,
-    required: true
   },
   data: {
     type: [productInfoSchema],
   },
   totalPrice: {
     type: Number,
-    required: true
+    required: true,
+  },
+  quantity: {
+    type: Number,
+  },
+  return: {
+    type: Number,
   },
   createdAt: {
     type: Date,

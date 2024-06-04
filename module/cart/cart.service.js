@@ -50,7 +50,7 @@ const getCartFromDB = async (req, res) => {
       let buyProduct = (targetData[i].data.buyProduct * targetData[i].quantity);
       let suggestionData = allPackage.filter(
         (package) =>
-          package.data.buyProduct >= buyProduct &&
+          package.data.buyProduct == buyProduct &&
           package.category == targetData[i].category &&
           package._id != targetData[i].productId.toString()
       );
