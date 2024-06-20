@@ -1,20 +1,5 @@
 const mongoose = require("mongoose");
 
-const packageSchema = new mongoose.Schema({
-  productId: {
-    type: String,
-    required:true,
-  },
-  buyProduct: {
-    type: Number,
-    required: true,
-  },
-  getProduct: {
-    type: Number,
-    required: true,
-  },
-});
-
 const ProductSchema = mongoose.Schema({
   name: {
     type: String,
@@ -30,18 +15,19 @@ const ProductSchema = mongoose.Schema({
   },
   category: {
     type: String,
-    required: true
+    required: true,
   },
   available: {
     type: Number,
     required: true,
   },
-  data: {
-    type: packageSchema,
-  },
   description: {
     type: String,
     required: true,
+  },
+  package: {
+    type: String,
+    default:"null"
   },
   sellingType: {
     type: String,

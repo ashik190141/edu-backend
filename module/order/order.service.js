@@ -3,6 +3,7 @@ const myModel = require("./order.model");
 const cartModel = require("../cart/cart.model");
 const productModel = require("../product/product.model");
 const userModel = require("../auth/auth.model");
+const packageModel = require("../package/package.model");
 const { calculatePercentage } = require("../../calculateDiscount/calculatePercentage");
 
 const orderAddIntoDB = async (req, res) => {
@@ -15,46 +16,26 @@ const orderAddIntoDB = async (req, res) => {
     await document.save();
 
     for (let i = 0; i < orderData.length; i++){
-      let packageId = orderData[i].productId;
-      let productOfPackageId = orderData[i].packageProductId;
+      let productId = orderData[i].productId;
 
-      const filterByPackageId = { _id: packageId };
-      const queryByProductOfPackageId = { _id: productOfPackageId };
+      const filterByProductId = { _id: productId };
 
-      const packageInfo = await productModel.findOne(filterByPackageId);
-      
-      const productInfoForPackage = await productModel.findOne(queryByProductOfPackageId);
+      const productInfo = await productModel.findOne(filterByProductId);
 
-      const productAvailable = productInfoForPackage.available;
-      const packageAvailable = packageInfo.available;
-
-      const totalProductForPackage =
-        (packageInfo?.data?.buyProduct +
-          packageInfo?.data?.getProduct) || 0;
-
-      const updatedAvailablePackage = {
-        $set: {
-          available: packageAvailable - orderData[i].quantity,
-        },
-      };
+      const productAvailable = productInfo.available;
 
       const updatedAvailableProduct = {
         $set: {
-          available: productAvailable - totalProductForPackage*orderData[i].quantity,
+          available: productAvailable - orderData[i].quantity,
         },
       };
 
-      const updateAvailablePackage = await productModel.updateOne(
-        filterByPackageId,
-        updatedAvailablePackage
-      );
-
       const updateAvailableProduct = await productModel.updateOne(
-        queryByProductOfPackageId,
+        filterByProductId,
         updatedAvailableProduct
       );
 
-      if (updateAvailableProduct.modifiedCount <= 0 || updateAvailablePackage.modifiedCount <= 0)
+      if (updateAvailableProduct.modifiedCount <= 0)
         return;
     }
 
@@ -92,10 +73,11 @@ const getUserOrderProductFromDB = async (req, res) => {
         const productInfo = await productModel.findOne(query);
 
         const obj = {
-          _id: allData[i]._id,
+          orderId: allData[i]._id,
           email: email,
           image: productInfo.image,
           name: productInfo.name,
+          productId: dataOfProduct[j].productId,
           price: dataOfProduct[j].discount,
           status: dataOfProduct[j].status,
           quantity: dataOfProduct[j].quantity,
@@ -198,6 +180,7 @@ const returnProductIntoDB = async (req, res) => {
     const id = req.params.id;
     const orderDataId = req.params.orderDataId;
     const body = req.body;
+    console.log('body', body);
 
     const query = { _id: id };
     const targetOrder = await myModel.findOne(query);
@@ -206,32 +189,22 @@ const returnProductIntoDB = async (req, res) => {
     for (let i = 0; i < orderData.length; i++) {
       if (orderData[i]._id == orderDataId) {
         const productId = orderData[i].productId;
-        const packageProductId = orderData[i].packageProductId;
 
         const queryByProductId = { _id: productId };
-        const queryByPackageProductId = { _id: packageProductId };
 
         const productInfo = await productModel.findOne(queryByProductId);
-        const packageProductInfo = await productModel.findOne(
-          queryByPackageProductId
-        );
+        console.log("productInfo", productInfo);
 
-        const updatePackageProductAvailable =
-          packageProductInfo.available + body.return;
-        const updatePackageAvailable = productInfo.available + body.quantity;
+        const updateProductAvailable = productInfo.available + body.return;
+
         orderData[i].quantity = body.quantity;
-
-        const updatePackageAvailableDoc = {
-          $set: {
-            available: updatePackageAvailable,
-          },
-        };
 
         const updateProductAvailableDoc = {
           $set: {
-            available: updatePackageProductAvailable,
+            available: updateProductAvailable,
           },
         };
+        console.log("updateProductAvailableDoc", updateProductAvailableDoc);
 
         const updateOrderData = {
           $set: {
@@ -239,24 +212,21 @@ const returnProductIntoDB = async (req, res) => {
             data: orderData,
           },
         };
-
-        const resultPackageAvailable = await productModel.updateOne(
-          queryByProductId,
-          updatePackageAvailableDoc
-        );
+        console.log("updateOrderData", updateOrderData);
 
         const resultProductAvailable = await productModel.updateOne(
-          queryByPackageProductId,
+          queryByProductId,
           updateProductAvailableDoc
         );
+        console.log("resultProductAvailable", resultProductAvailable);
 
         const resultOrderUpdate = await myModel.updateOne(
           query,
           updateOrderData
         );
+        console.log("resultOrderUpdate", resultOrderUpdate);
 
         if (
-          resultPackageAvailable.modifiedCount > 0 &&
           resultProductAvailable.modifiedCount > 0 &&
           resultOrderUpdate.modifiedCount > 0
         ) {
@@ -291,36 +261,37 @@ const getProductInfoFromDB = async (req, res) => {
     for (let i = 0; i < targetOrderData.length; i++){
       if (targetOrderData[i]._id == orderDataId) {
         const productId = targetOrderData[i].productId;
-        const packageProductId = targetOrderData[i].packageProductId;
 
         const queryByProductId = { _id: productId };
-        const queryByPackageProductId = { _id: packageProductId };
 
         const productInfo = await productModel.findOne(queryByProductId);
-        const packageProductInfo = await productModel.findOne(
-          queryByPackageProductId
-        );
+        // console.log("productInfo", productInfo);
+        const packageQuery = { _id: productInfo?.package };
+        // console.log(packageQuery);
+        const packageInfo = await packageModel.findOne(packageQuery);
+        // console.log(packageInfo);
 
         const discountAmount = await calculatePercentage(
           user,
-          packageProductInfo.category,
-          packageProductInfo._id,
-          packageProductInfo.price
+          productInfo.category,
+          productInfo._id,
+          productInfo.price
         );
 
         obj = {
-          name: packageProductInfo.name,
-          image: packageProductInfo.image,
-          price: packageProductInfo.price,
-          description: packageProductInfo.description,
-          category: packageProductInfo.category,
-          buy: productInfo.data.buyProduct,
-          get: productInfo.data.getProduct,
+          name: productInfo.name,
+          image: productInfo.image,
+          price: productInfo.price,
+          description: productInfo.description,
+          category: productInfo.category,
           quantity: targetOrderData[i].quantity,
-          totalGet:
-            (productInfo.data.buyProduct + productInfo.data.getProduct) *
-            targetOrderData[i].quantity,
           totalPrice: targetOrder.totalPrice,
+          buy: packageInfo.buyProduct,
+          get: packageInfo.getProduct,
+          packageQuantity: parseInt(
+            targetOrderData[i].quantity /
+              (packageInfo.buyProduct + packageInfo.getProduct)
+          ),
           discountAmount: discountAmount,
           orderDate: targetOrder.createdAt,
         };

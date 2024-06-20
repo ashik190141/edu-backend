@@ -5,10 +5,6 @@ const productInfoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  packageProductId: {
-    type: String,
-    required: true,
-  },
   discount: {
     type: Number,
     required: true,

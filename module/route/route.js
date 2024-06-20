@@ -6,6 +6,7 @@ const cartRouter = require("../cart/cart.route");
 const orderRouter = require("../order/order.route");
 const discountRouter = require("../discount/discount.route");
 const userDiscountRouter = require("../userDiscount/userDiscount.route");
+const packageRouter = require("../package/package.route");
 
 const router = express.Router();
 
@@ -17,6 +18,10 @@ const moduleRoute = [
   {
     path: "/product",
     route: productRouter,
+  },
+  {
+    path: "/package",
+    route: packageRouter,
   },
   {
     path: "/cart",
