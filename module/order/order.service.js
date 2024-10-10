@@ -10,10 +10,27 @@ const orderAddIntoDB = async (req, res) => {
   try {
     const data = req.body;
     console.log(data);
-    const orderData = data.data
+    const orderData = data.data;
     const query = { email: data.email };
+    // data retrieve from database
+    const allData = await myModel.find(query).exec();
+    // select the first order and calculate discount
+    let discountSecondPurchase = allData[0]?.totalPrice * 0.1;
+    console.log(discountSecondPurchase);
+    // apply condition for second order
+    if (allData.length == 1) {
+      data.totalPrice = data.totalPrice - discountSecondPurchase;
+    }
     const document = new myModel(data);
     await document.save();
+
+
+    // const data = req.body;
+    // console.log(data);
+    // const orderData = data.data
+    // const query = { email: data.email };
+    // const document = new myModel(data);
+    // await document.save();
 
     for (let i = 0; i < orderData.length; i++){
       let productId = orderData[i].productId;
